@@ -119,7 +119,7 @@ public:
 	}
 
 /*
- 	int nr_locuri,nr_randuri,nr_zone;
+ 	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
 	int*** scaun;
 */
 	int getNr_locuri()
@@ -137,6 +137,11 @@ public:
 		return nr_zone;
 	}
 
+	int getNr_locuri_total()
+	{
+		return nr_locuri_total;
+	}
+
 	int getScaun(int zona, int rand,int loc)
 	{
 		if (zona < 0 || rand < 0 || loc < 0)
@@ -151,7 +156,7 @@ public:
 	}
 
 /*
-	int nr_locuri,nr_randuri,nr_zone;
+	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
 	int*** scaun;
 */
 
@@ -225,6 +230,34 @@ public:
 		
 	}
 
+/*
+	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
+	int*** scaun;
+*/
+
+	int nr_locuriVerificare()
+	{
+		if (nr_locuri == 0)
+		{
+			return 0;
+		}
+		else
+		{
+			if (nr_locuri == nr_locuri_total / nr_randuri)
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
+
+	void nr_locuri_totalGenerare()
+	{
+		nr_locuri_total = nr_randuri * nr_locuri;
+	}
 };
 
 class Eveniment : public Locatie
@@ -258,6 +291,7 @@ public:
 class Bilet: public Eveniment
 {
 private:
+	static string tipBilet;
 	int nr_locB, nr_randB, nr_zonaB;
 	string nume;
 	string prenume;
@@ -298,3 +332,4 @@ public:
 		return mediu / nrBilete;
 	}
 };
+string Bilet::tipBilet = "Bilet pentru eveniment";
