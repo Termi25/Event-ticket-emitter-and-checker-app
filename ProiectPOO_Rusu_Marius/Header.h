@@ -374,6 +374,7 @@ public:
 			cout << "Datele copiate din clasa data nu genereaza tabloul de scaune ale locatiei" << endl;
 		}
 		this->adresa = locatie.adresa;
+		return *this;
 	}
 
 	bool operator!()
@@ -793,6 +794,7 @@ public:
 		{
 			this->nume_zone = nullptr;
 		}
+		return *this;
 	}
 
 	string& operator[](int index)
@@ -1067,6 +1069,63 @@ public:
 	string prenume;
 	const int ID;
 */
+
+	Bilet operator=(const Bilet& bilet)
+	{
+		this->nr_locB = bilet.nr_locB;
+		this->nr_randB = bilet.nr_randB;
+		this->nr_zonaB = bilet.nr_zonaB;
+		this->nume = bilet.nume;
+		this->prenume = bilet.prenume;
+		return *this;
+	}
+
+	Bilet operator++()
+	{
+		if (nr_locB+1 < getNr_locuri() && getScaun(nr_zonaB, nr_randB, nr_locB + 1) == 0)
+		{
+			setScaun(nr_zonaB, nr_randB, nr_locB, 0);
+			setScaun(nr_zonaB, nr_randB, nr_locB+1, 1);
+			nr_locB ++;
+		}
+		return *this;
+	}
+
+	Bilet operator++(int i)
+	{
+		Bilet copie = *this;
+		if (nr_locB + 1 < getNr_locuri() && getScaun(nr_zonaB, nr_randB, nr_locB + 1) == 0)
+		{
+			setScaun(nr_zonaB, nr_randB, nr_locB, 0);
+			setScaun(nr_zonaB, nr_randB, nr_locB + 1, 1);
+			nr_locB++;
+		}
+		return copie;
+	}
+
+
+	Bilet operator--()
+	{
+		if (nr_locB -1 >=0 && getScaun(nr_zonaB, nr_randB, nr_locB - 1) == 0)
+		{
+			setScaun(nr_zonaB, nr_randB, nr_locB, 0);
+			setScaun(nr_zonaB, nr_randB, nr_locB - 1, 1);
+			nr_locB--;
+		}
+		return *this;
+	}
+
+	Bilet operator--(int i)
+	{
+		Bilet copie = *this;
+		if (nr_locB - 1 >= 0 && getScaun(nr_zonaB, nr_randB, nr_locB - 1) == 0)
+		{
+			setScaun(nr_zonaB, nr_randB, nr_locB, 0);
+			setScaun(nr_zonaB, nr_randB, nr_locB - 1, 1);
+			nr_locB--;
+		}
+		return copie;
+	}
 
 	friend ostream& operator<<(ostream&, Bilet);
 	friend istream& operator>>(istream&, Bilet&);
