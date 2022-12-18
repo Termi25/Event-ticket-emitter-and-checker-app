@@ -231,6 +231,18 @@ public:
 		}
 	}
 
+	void setScaun(int z, int r, int l,int status)
+	{
+		if (z >= 0 && z < nr_zone && r >= 0 && r < nr_randuri && l >= 0 && l < nr_locuri && (status==0 || status==1))
+		{
+			scaun[z][r][l] = status;
+		}
+		else
+		{
+			cout << "Date invalide" << endl;
+		}
+	}
+
 	void setScaune(int*** vector, int z, int r, int l)
 	{
 		if (vector == nullptr || z < 0 || r < 0 || l < 0)
@@ -325,6 +337,45 @@ public:
 		}
 	}
 
+	Locatie operator=(const Locatie& locatie)
+	{
+		this->nr_locuri = locatie.nr_locuri;
+		this->nr_randuri = locatie.nr_randuri;
+		this->nr_zone = locatie.nr_zone;
+		this->nr_locuri_total = locatie.nr_locuri_total;
+		if (nr_zone > 0 && nr_locuri > 0 && nr_randuri > 0 && locatie.scaun != nullptr)
+		{
+			scaun = new int** [nr_zone];
+			for (int i = 0; i < nr_zone; i++)
+			{
+				scaun[i] = new int* [nr_randuri];
+			}
+			for (int i = 0; i < nr_zone; i++)
+			{
+				for (int j = 0; j < nr_randuri; j++)
+				{
+					scaun[i][j] = new int[nr_locuri];
+				}
+			}
+			for (int i = 0; i < nr_zone; i++)
+			{
+				for (int j = 0; j < nr_randuri; j++)
+				{
+					for (int g = 0; g < nr_locuri; g++)
+					{
+						scaun[i][j][g] = locatie.scaun[i][j][g];
+					}
+				}
+			}
+		}
+		else
+		{
+			scaun = nullptr;
+			cout << "Datele copiate din clasa data nu genereaza tabloul de scaune ale locatiei" << endl;
+		}
+		this->adresa = locatie.adresa;
+	}
+
 	bool operator!()
 	{
 		return nr_locuri_total != 0;
@@ -362,7 +413,7 @@ ostream& operator<<(ostream& out, Locatie t2)
 	out << " Tablou status locuri: " << endl;
 	for (int i = 0; i < t2.getNr_zone(); i++)
 	{
-		for (int j = 0; j < t2.getNr_randuri()*2; j++)
+		for (int j = 0; j < t2.getNr_randuri(); j++)
 		{
 			for (int g = 0; g < t2.getNr_locuri(); g++)
 			{
@@ -610,6 +661,7 @@ public:
 		{
 			return this->nume_zone[index];
 		}
+		return "INVALID";
 	}
 /*
 	string data_eveniment, ora_eveniment, denumire,tip_eveniment;
@@ -712,13 +764,53 @@ public:
 		}
 	}
 
-	int durataOre()
+	float durataOre()
 	{
 		if (durata >= 0.0f)
 		{
 			return durata / 60;
 		}
 		return 0.0f;
+	}
+
+	Eveniment operator=(const Eveniment& eveniment)
+	{
+		this->data_eveniment = eveniment.data_eveniment;
+		this->ora_eveniment = eveniment.ora_eveniment;
+		this->denumire = eveniment.denumire;
+		this->tip_eveniment = eveniment.tip_eveniment;
+		this->durata = eveniment.durata;
+		if (eveniment.nume_zone != nullptr && getNr_zone() > 0)
+		{
+			delete[] nume_zone;
+			this->nume_zone = new string[getNr_zone()];
+			for (int i = 0; i < getNr_zone(); i++)
+			{
+				this->nume_zone[i] = eveniment.nume_zone[i];
+			}
+		}
+		else
+		{
+			this->nume_zone = nullptr;
+		}
+	}
+
+	string& operator[](int index)
+	{
+		if (index >= 0 && index < getNr_zone())
+		{
+			return nume_zone[index];
+		}
+	}
+
+	operator float()
+	{
+		return durata;
+	}
+
+	operator string()
+	{
+		return denumire;
 	}
 
 	friend ostream& operator<<(ostream&, Eveniment);
@@ -825,15 +917,15 @@ private:
 	string prenume;
 	const int ID;
 
-	int creareID()
-	{
-			srand((unsigned)time(NULL));
-			return rand();
-	}
-
 public:
 
-	Bilet() :ID(creareID()) {
+	int creareID()
+	{
+		srand((unsigned)time(NULL));
+		return rand();
+	}
+
+	Bilet() :ID(creareID()), Eveniment() {
 
 		nr_locB = 0;
 		nr_randB = 0;
@@ -842,12 +934,120 @@ public:
 		prenume = "";
 	}
 
-	Bilet(int Nr_locB, int Nr_randB, int Nr_zonaB, string Nume, string Prenume) :ID(creareID()) {
+	Bilet(string data_eveniment, string ora_eveniment, string denumire, string tip_eveniment, float durata, string* nume_zoneB, int nr_loc, int nr_rand, int nr_zone, int nr_locuri_total, int*** Scaune, string adresa,int Nr_locB, int Nr_randB, int Nr_zonaB, string Nume, string Prenume) :ID(creareID()), Eveniment(data_eveniment,ora_eveniment,denumire,tip_eveniment,durata, nume_zoneB, nr_loc,  nr_rand,  nr_zone,  nr_locuri_total, Scaune, adresa)
+	{
 		this->nr_locB = Nr_locB;
 		this->nr_randB = Nr_randB;
 		this->nr_zonaB = Nr_zonaB;
 		this->nume = Nume;
 		this->prenume = Prenume;
+	}
+
+	Bilet(const Bilet& bilet):ID(creareID()),Eveniment(bilet)
+	{
+		this->nr_locB = bilet.nr_locB;
+		this->nr_randB = bilet.nr_randB;
+		this->nr_zonaB = bilet.nr_zonaB;
+		this->nume = bilet.nume;
+		this->prenume = bilet.prenume;
+	}
+
+/*
+	static string tipBilet;
+	int nr_locB, nr_randB, nr_zonaB;
+	string nume;
+	string prenume;
+	const int ID;
+*/
+
+	int getNr_locB()
+	{
+		return this->nr_locB;
+	}
+
+	int getNr_randB()
+	{
+		return this->nr_randB;
+	}
+
+	int getNr_zonaB()
+	{
+		return this->nr_zonaB;
+	}
+
+	string getNume()
+	{
+		return this->nume;
+	}
+
+	string getPrenume()
+	{
+		return this->prenume;
+	}
+
+	const int getID()
+	{
+		return this->ID;
+	}
+
+/*
+	static string tipBilet;
+	int nr_locB, nr_randB, nr_zonaB;
+	string nume;
+	string prenume;
+	const int ID;
+*/
+
+	void setNr_locB(int x)
+	{
+		if (x >= 0 && x < getNr_locuri() && getScaun(nr_zonaB,nr_randB,x)==0)
+		{
+			setScaun(nr_zonaB, nr_randB, nr_locB, 0);
+			setScaun(nr_zonaB, nr_randB, x, 1);
+			nr_locB = x;
+		}
+		else
+		{
+			cout << "Valoare invalida pentru setare loc bilet." << endl;
+		}
+	}
+
+	void setNr_randB(int x)
+	{
+		if (x >= 0 && x < getNr_randuri() && getScaun(nr_zonaB, x, nr_locB) == 0)
+		{
+			setScaun(nr_zonaB, nr_randB, nr_locB, 0);
+			setScaun(nr_zonaB, x, nr_locB, 1);
+			nr_randB = x;
+		}
+		else
+		{
+			cout << "Valoare invalida pentru setare rand bilet." << endl;
+		}
+	}
+
+	void setNr_zonaB(int x)
+	{
+		if (x >= 0 && x < getNr_zone() && getScaun(x, nr_randB, nr_locB) == 0)
+		{
+			setScaun(nr_zonaB, nr_randB, nr_locB, 0);
+			setScaun(x, nr_randB, nr_locB, 1);
+			nr_zonaB = x;
+		}
+		else
+		{
+			cout << "Valoare invalida pentru setare zona bilet." << endl;
+		}
+	}
+
+	void setNume(string nume)
+	{
+		this->nume = nume;
+	}
+
+	void setPrenume(string prenume)
+	{
+		this->prenume = prenume;
 	}
 
 	static float IDMediu_Bilet(Bilet* bilete, int nrBilete)
@@ -859,5 +1059,122 @@ public:
 		}
 		return mediu / nrBilete;
 	}
+
+/*
+	static string tipBilet;
+	int nr_locB, nr_randB, nr_zonaB;
+	string nume;
+	string prenume;
+	const int ID;
+*/
+
+	friend ostream& operator<<(ostream&, Bilet);
+	friend istream& operator>>(istream&, Bilet&);
 };
 string Bilet::tipBilet = "Bilet pentru eveniment";
+
+/*
+	static string tipBilet;
+	int nr_locB, nr_randB, nr_zonaB;
+	string nume;
+	string prenume;
+	const int ID;
+
+	string data_eveniment, ora_eveniment, denumire,tip_eveniment;
+	float durata;
+	string* nume_zone;
+*/
+
+ostream& operator<<(ostream& out, Bilet bilet)
+{
+	out << "ID bilet: " << bilet.getID() << endl;
+	out << "Tip bilet: " << bilet.tipBilet << endl;
+	out << "Numar loc, rand si zona biletului: " << bilet.getNr_locB() << ' ' << bilet.getNr_randB() << ' ' << bilet.getNr_zonaB() << ' ' << bilet.getNume_zona(bilet.getNr_zonaB()) << endl;
+	out << " Nume si prenume beneficiar: " << bilet.getNume() << ' ' << bilet.getPrenume() << endl;
+	out << "Adresa locatiei: " << bilet.getAdresa() << endl;
+	out << "Denumire eveniment: " << bilet.getDenumire_ev() << endl;
+	out << "Data si ora evenimentului: " << bilet.getData_ev() << " | " << bilet.getOra_ev() << endl;
+	out << "Durata evenimentului: " << bilet.getDurata_ev() << " minute" << endl;
+	return out;
+}
+
+istream& operator>>(istream& in, Bilet& bilet)
+{
+	in >> (Eveniment&)bilet;
+	int z, r, l;
+
+	cout << " Tablou status locuri: " << endl;
+	for (int i = 0; i < bilet.getNr_zone(); i++)
+	{
+		cout << bilet.getNume_zona(i) << endl;
+		for (int j = 0; j < bilet.getNr_randuri(); j++)
+		{
+			for (int g = 0; g < bilet.getNr_locuri(); g++)
+			{
+				cout << i + 1 << j + 1 << g + 1 << " ";
+			}
+			cout << endl;
+			for (int g = 0; g < bilet.getNr_locuri(); g++)
+			{
+				cout << " " << bilet.getScaun(g, j, i) << "  ";
+			}
+			cout << endl;
+		}
+		cout << endl << endl;
+	}
+
+	cout << "Numar zona aleasa: ";
+	in >> z;
+	cout << " Numar rand ales: ";
+	in >> r;
+	cout << "Numar loc ales: ";
+	in >> l;
+	
+	while (bilet.getScaun(z, r, l) == 1)
+	{
+		for (int i = 0; i < bilet.getNr_zone(); i++)
+		{
+			cout << bilet.getNume_zona(i) << endl;
+			for (int j = 0; j < bilet.getNr_randuri() ; j++)
+			{
+				for (int g = 0; g < bilet.getNr_locuri(); g++)
+				{
+					cout << i + 1 << j + 1 << g + 1 << " ";
+				}
+				cout << endl;
+				for (int g = 0; g < bilet.getNr_locuri(); g++)
+				{
+					cout << " " << bilet.getScaun(g, j, i) << "  ";
+				}
+				cout << endl;
+			}
+			cout << endl << endl;
+		}
+
+		cout << "Va rugam sa selectati un loc liber, indicat prin valoarea 0 de sub fiecare zona" << endl;
+		cout << "Numar zona aleasa: ";
+		in >> z;
+		cout << " Numar rand ales: ";
+		in >> r;
+		cout << "Numar loc ales: ";
+		in >> l;
+	}
+	bilet.setScaun(z,r,l,1);
+	bilet.setNr_locB(l);
+	bilet.setNr_randB(r);
+	bilet.setNr_zonaB(z);
+
+	string np;
+
+	cout << "Nume: ";
+	in >> ws;
+	getline(in, np);
+	bilet.setNume(np);
+
+	cout << "Prenume: ";
+	in >> ws;
+	getline(in, np);
+	bilet.setPrenume(np);
+
+	return in;
+}
