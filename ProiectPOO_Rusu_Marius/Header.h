@@ -7,9 +7,10 @@ using namespace std;
 
 
 class Locatie {
-protected: 
+private: 
 	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
 	int*** scaun;
+	string adresa;
 
 public:
 
@@ -20,9 +21,10 @@ public:
 		nr_randuri = 0;
 		nr_zone = 0;
 		scaun = nullptr;
+		adresa = "";
 	}
 
-	Locatie(int Nr_loc, int Nr_rand, int Nr_zone, int nr_locuri_total, int*** Scaune)
+	Locatie(int Nr_loc, int Nr_rand, int Nr_zone, int nr_locuri_total, int*** Scaune,string adresa)
 	{
 		this->nr_locuri = Nr_loc;
 		this->nr_randuri = Nr_rand;
@@ -58,6 +60,7 @@ public:
 			scaun = nullptr;
 			cout << "Datele introduse pentru locatie sunt eronate." << endl;
 		}
+		this->adresa = adresa;
 	}
 
 	~Locatie()
@@ -116,30 +119,32 @@ public:
 			scaun = nullptr;
 			cout << "Datele copiate din clasa data nu genereaza tabloul de scaune ale locatiei" << endl;
 		}
+		this->adresa = locatie.adresa;
 	}
 
 /*
  	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
 	int*** scaun;
+	string adresa;
 */
 	int getNr_locuri()
 	{
-		return nr_locuri;
+		return this->nr_locuri;
 	}
 
 	int getNr_randuri()
 	{
-		return nr_randuri;
+		return this->nr_randuri;
 	}
 
 	int getNr_zone()
 	{
-		return nr_zone;
+		return this->nr_zone;
 	}
 
 	int getNr_locuri_total()
 	{
-		return nr_locuri_total;
+		return this->nr_locuri_total;
 	}
 
 	int getScaun(int zona, int rand,int loc)
@@ -150,32 +155,80 @@ public:
 		}
 		else
 		{
-			int status_scaun = scaun[zona][rand][loc];
-			return status_scaun;
+			if (scaun != nullptr)
+			{
+				int status_scaun = this->scaun[zona][rand][loc];
+				return status_scaun;
+			}
+			else
+			{
+				return -1;
+				cout << "Tablou locuri inexistent";
+			}
 		}
+	}
+
+	string getAdresa()
+	{
+		return this->adresa;
 	}
 
 /*
 	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
 	int*** scaun;
+	string adresa;
 */
 
 	void setNr_locuri(int x)
 	{
-		this->nr_locuri = x;
-		cout << "Setat" << endl;
+		if (x > 0)
+		{
+			this->nr_locuri = x;
+			cout << "Setat" << endl;
+		}
+		else
+		{
+			cout << " Valoarea introdusa este invalida" << endl;
+		}
 	}
 
 	void setNr_randuri(int x)
 	{
-		this->nr_randuri = x;
-		cout << "Setat" << endl;
+		if (x > 0)
+		{
+			this->nr_randuri = x;
+			cout << "Setat" << endl;
+		}
+		else
+		{
+			cout << " Valoarea introdusa este invalida" << endl;
+		}
 	}
 
 	void setNr_zone(int x)
 	{
-		this->nr_zone = x;
-		cout << "Setat" << endl;
+		if (x > 0)
+		{
+			this->nr_zone = x;
+			cout << "Setat" << endl;
+		}
+		else
+		{
+			cout << " Valoarea introdusa este invalida" << endl;
+		}
+	}
+
+	void setNr_locuri_total(int x)
+	{
+		if (x > 0)
+		{
+			this->nr_locuri_total = x;
+			cout << "Setat" << endl;
+		}
+		else
+		{
+			cout << " Valoarea introdusa este invalida" << endl;
+		}
 	}
 
 	void setScaune(int*** vector, int z, int r, int l)
@@ -230,20 +283,26 @@ public:
 		
 	}
 
+	void setAdresa(string adresa)
+	{
+		this->adresa = adresa;
+	}
+
 /*
 	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
 	int*** scaun;
+	string adresa;
 */
 
 	int nr_locuriVerificare()
 	{
-		if (nr_locuri == 0)
+		if (nr_locuri <= 0 || nr_randuri <= 0 || nr_locuri_total <= 0)
 		{
 			return 0;
 		}
 		else
 		{
-			if (nr_locuri == nr_locuri_total / nr_randuri)
+			if (nr_locuri * nr_randuri == nr_locuri_total)
 			{
 				return 1;
 			}
@@ -256,13 +315,192 @@ public:
 
 	void nr_locuri_totalGenerare()
 	{
-		nr_locuri_total = nr_randuri * nr_locuri;
+		if (nr_locuri <= 0 || nr_randuri <= 0 || nr_locuri_total <= 0)
+		{
+			nr_locuri_total = 0;
+		}
+		else
+		{
+			nr_locuri_total = nr_randuri * nr_locuri;
+		}
 	}
+
+	bool operator!()
+	{
+		return nr_locuri_total != 0;
+	}
+
+	friend Locatie operator+(int, Locatie);
+	friend ostream& operator<<(ostream&, Locatie);
+	friend istream& operator>>(istream&, Locatie&);
 };
+
+Locatie operator+(int x, Locatie t2)
+{
+	if (x >= 0)
+	{
+		t2.setNr_zone(t2.getNr_zone() + x);
+		return t2;
+	}
+	return t2;
+}
+
+
+/*
+	int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
+	int*** scaun;
+	string adresa;
+*/
+
+ostream& operator<<(ostream& out, Locatie t2)
+{
+	out << "Adresa locatiei: " << t2.getAdresa() << endl;
+	out << "Numar locuri total locatie: " << t2.getNr_locuri_total() << endl;
+	out << " Numar locuri per rand locatie: " << t2.getNr_locuri() << endl;
+	out << " Numar randuri locatie: " << t2.getNr_randuri() << endl;
+	out << " Numar zone locatie: " << t2.getNr_zone() << endl;
+	out << " Tablou status locuri: " << endl;
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		for (int j = 0; j < t2.getNr_randuri()*2; j++)
+		{
+			for (int g = 0; g < t2.getNr_locuri(); g++)
+			{
+				out << i+1 << j+1 << g+1 << " ";
+			}
+			out << endl;
+			for (int g = 0; g < t2.getNr_locuri(); g++)
+			{
+				out << " " << t2.getScaun(g, j, i) << "  ";
+			}
+			out << endl;
+		}
+		return out;
+	}
+	return out;
+}
+
+istream& operator>>(istream& in, Locatie& t2)
+{
+	int x;
+	string y;
+	cout << "Adresa locatiei: ";
+	in >> ws;
+	getline(in,y);
+	t2.setAdresa(y);
+	cout <<endl<< "Numar locuri total locatie: ";
+	in >> x;
+	while (x < 1)
+	{
+		in >> x;
+		if (x < 1)
+		{
+			cout << "Valoare gresita, introduceti din nou";
+		}
+	}
+	if (x > 0)
+	{
+		t2.setNr_locuri_total(x);
+	}
+	cout << endl;
+
+	cout << " Numar locuri per rand locatie: ";
+	in >> x;
+	while (x < 1)
+	{
+		in >> x;
+		t2.setNr_locuri(x);
+		if (x < 1)
+		{
+			cout << "Valoare gresita, introduceti din nou";
+		}
+	}
+	if (x > 0)
+	{
+		t2.setNr_locuri(x);
+	}
+	cout << endl;
+
+	cout << " Numar randuri locatie: ";
+	in >> x;
+	while (x < 1)
+	{
+		in >> x;
+		t2.setNr_randuri(x);
+		if (x < 1)
+		{
+			cout << "Valoare gresita, introduceti din nou";
+		}
+	}
+	if (x > 0)
+	{
+		t2.setNr_randuri(x);
+	}
+	cout << endl;
+
+	cout << " Numar zone locatie: ";
+	in >> x;
+	while (x < 1)
+	{
+		in >> x;
+		if (x < 1)
+		{
+			cout << "Valoare gresita, introduceti din nou";
+		}
+	}
+	if (x > 0)
+	{
+		t2.setNr_zone(x);
+	}
+	cout << endl;
+
+	cout << " Tablou status locuri: " << endl;
+	int*** input_tablou = new int** [t2.getNr_zone()];
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		input_tablou[i] = new int* [t2.getNr_randuri()];
+	}
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		for (int j = 0; j < t2.getNr_randuri(); j++)
+		{
+			input_tablou[i][j] = new int[t2.getNr_locuri()];
+		}
+	}
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		for (int j = 0; j < t2.getNr_randuri() * 2; j++)
+		{
+			for (int g = 0; g < t2.getNr_locuri(); g++)
+			{
+				cout << i+1 << j+1 << g+1 << " = ";
+				in >> x;
+				while (x != 0 && x != 1)
+				{
+					cout << i+1 << j+1 << g+1 << " = ";
+					in >> x;
+					if (x != 0 && x != 1)
+					{
+						cout << "Valoare gresita, introduceti din nou";
+					}
+				}
+				if (x == 0 || x == 1)
+				{
+					input_tablou[i][j][g] = x;
+				}
+				cout << endl;
+			}
+			cout << endl;
+		}
+		t2.setScaune(input_tablou,t2.getNr_zone(), t2.getNr_randuri(), t2.getNr_locuri());
+		return in;
+	}
+	return in;
+}
 
 class Eveniment : public Locatie
 {
-protected:
+private:
 	string data_eveniment, ora_eveniment, denumire,tip_eveniment;
 	float durata;
 	string* nume_zone;
@@ -280,13 +518,303 @@ public:
 		nume_zone = nullptr;
 	}
 
-	Eveniment(string data_eveniment, string ora_eveniment, string denumire, string tip_eveniment, char* cod_eveniment)
+	Eveniment(string data_eveniment, string ora_eveniment, string denumire, string tip_eveniment, float durata, string* nume_zoneB, int nr_loc, int nr_rand, int nr_zone, int nr_locuri_total, int*** Scaune, string adresa) : Locatie(nr_loc, nr_rand, nr_zone, nr_locuri_total, Scaune,adresa)
 	{
 		this->data_eveniment = data_eveniment;
 		this->ora_eveniment = ora_eveniment;
+		this->denumire = denumire;
+		this->tip_eveniment = tip_eveniment;
+		this->durata = durata;
+		if (nr_zone > 0 && nume_zoneB!=nullptr)
+		{
+			this->setNr_zone(nr_zone);
+			this->nume_zone = new string[nr_zone];
+			for (int i = 0; i < nr_zone; i++)
+			{
+				nume_zone[i] = nume_zoneB[i];
+			}
+		}
+		else
+		{
+			if (nr_zone > 0)
+			{
+				this->setNr_zone(nr_zone);
+			}
+			this->nume_zone = nullptr;
+		}
 	}
-	
+
+	~Eveniment()
+	{
+		if (nume_zone != nullptr)
+		{
+			delete[] nume_zone;
+			nume_zone = nullptr;
+		}
+	}
+
+	Eveniment(const Eveniment& eveniment) :Locatie(eveniment)
+	{
+		this->data_eveniment =eveniment.data_eveniment;
+		this->ora_eveniment = eveniment.ora_eveniment;
+		this->denumire = eveniment.denumire;
+		this->tip_eveniment = eveniment.tip_eveniment;
+		this->durata = eveniment.durata;
+		if (eveniment.nume_zone != nullptr && getNr_zone()>0)
+		{
+			delete[] nume_zone;
+			this->nume_zone = new string[getNr_zone()];
+			for (int i = 0; i < getNr_zone(); i++)
+			{
+				this->nume_zone[i] = eveniment.nume_zone[i];
+			}
+		}
+		else
+		{
+			this->nume_zone=nullptr;
+		}
+	}
+/*
+	string data_eveniment, ora_eveniment, denumire,tip_eveniment;
+	float durata;
+	string* nume_zone;
+*/
+	string getData_ev()
+	{
+		return this->data_eveniment;
+	}
+
+	string getOra_ev()
+	{
+		return this->ora_eveniment;
+	}
+
+	string getDenumire_ev()
+	{
+		return this->denumire;
+	}
+
+	string getTip_ev()
+	{
+		return this->tip_eveniment;
+	}
+
+	float getDurata_ev()
+	{
+		return this->durata;
+	}
+
+	string getNume_zona(int index)
+	{
+		if (index >= 0 && index < getNr_zone())
+		{
+			return this->nume_zone[index];
+		}
+	}
+/*
+	string data_eveniment, ora_eveniment, denumire,tip_eveniment;
+	float durata;
+	string* nume_zone;
+*/
+
+	void setData_ev(string data_evC)
+	{
+		this->data_eveniment = data_evC;
+	}
+
+	void setOra_ev(string ora_evC)
+	{
+		if (ora_evC.length() >= 4 && ora_evC.length() <= 5)
+		{
+			this->ora_eveniment = ora_evC;
+		}
+		else
+		{
+			cout << "Ora invalida, utillizati formatul xx:yy sau xxyy, unde x este ora in sistem de 24 de ore, iar y este minutele" << endl;
+		}
+	}
+
+	void setDenumire_ev(string denumireC)
+	{
+		this->denumire = denumireC;
+	}
+
+	void setTip_ev(string tipEvC)
+	{
+		this->tip_eveniment = tipEvC;
+	}
+
+	void setDurata_ev(float durataC)
+	{
+		if (durataC >= 0.0f)
+		{
+			this->durata = durataC;
+		}
+		else
+		{
+			cout << "Imposibil ca durata unui eveniment sa fie negativa." << endl;
+		}
+	}
+
+	void setNume_zoneEv(string* nume_z, int nr_zoneC)
+	{
+		if (nr_zoneC == getNr_zone()&& nume_z!=nullptr)
+		{
+			for (int i = 0; i < nr_zoneC; i++)
+			{
+				this->nume_zone[i] = nume_z[i];
+			}
+		}
+		else
+		{
+			if (nr_zoneC != getNr_zone() && nume_z != nullptr)
+			{
+				setNr_zone(nr_zoneC);
+				delete[]nume_zone;
+				nume_zone = new string[nr_zoneC];
+				for (int i = 0; i < nr_zoneC; i++)
+				{
+					this->nume_zone[i] = nume_z[i];
+				}
+			}
+			else
+			{
+				cout << "Nume zone nemodificat, vector nume zone este inexistent." << endl;
+			}
+		}
+	}
+
+/*
+	string data_eveniment, ora_eveniment, denumire, tip_eveniment;
+	float durata;
+	string* nume_zone;
+*/
+	void sablonizareOra5()
+	{
+		if (getOra_ev().length() == 4)
+		{
+			string intermediar = getOra_ev();
+			intermediar[4] = intermediar[3];
+			intermediar[3] = intermediar[2];
+			intermediar[2] = ':';
+			setOra_ev(intermediar);
+		}
+		else
+		{
+			if (getOra_ev().length() == 5 && getOra_ev()[2]==':')
+			{
+				cout << "Cuvantul este deja setata la formatul potrivit" << endl;
+			}
+			else
+			{
+				cout << "Ora a fost introdusa gresit" << endl;
+			}
+		}
+	}
+
+	int durataOre()
+	{
+		if (durata >= 0.0f)
+		{
+			return durata / 60;
+		}
+		return 0.0f;
+	}
+
+	friend ostream& operator<<(ostream&, Eveniment);
+	friend istream& operator>>(istream&, Eveniment&);
 };
+
+/*
+	string data_eveniment, ora_eveniment, denumire, tip_eveniment;
+	float durata;
+	string* nume_zone;
+*/
+
+ostream& operator<<(ostream& out, Eveniment ev)
+{
+	out << (Locatie)ev << endl;
+	out << "Data evenimentului: " << ev.getData_ev() << endl;
+	out << "Ora evenimentului: " << ev.getOra_ev() << endl;
+	out << "Denumirea evenimentului: " << ev.getDenumire_ev() << endl;
+	out << "Tip eveniment: " << ev.getTip_ev() << endl;
+	out << "Durata evenimentului: " << ev.getDurata_ev() << endl;
+	if (ev.getNr_zone() > 0 && ev.nume_zone != nullptr)
+	{
+		out << "Nume zone: " << endl;
+		for (int i = 0; i < ev.getNr_zone(); i++)
+		{
+			out << i << '.' << ev.getNume_zona(i) << endl;
+		}
+	}
+	else
+	{
+		out << "Vectorul de nume de zone este invalid." << endl;
+	}
+	return out;
+}
+
+/*
+	string data_eveniment, ora_eveniment, denumire, tip_eveniment;
+	float durata;
+	string* nume_zone;
+*/
+
+istream& operator>>(istream& in, Eveniment& ev)
+{
+	string y;
+	in >> (Locatie&)ev;
+
+	cout << "Data evenimentului: ";
+	in >> ws;
+	getline(in, y);
+	ev.setData_ev(y);
+	cout << endl;
+
+	cout << "Ora evenimentului: ";
+	in >> ws;
+	getline(in, y);
+	ev.setOra_ev(y);
+	cout << endl; 
+	
+	cout << "Denumirea evenimentului: ";
+	in >> ws;
+	getline(in, y);
+	ev.setDenumire_ev(y);
+	cout << endl;
+
+	cout << "Tipul evenimentului: ";
+	in >> ws;
+	getline(in, y);
+	ev.setTip_ev(y);
+	cout << endl;
+
+	cout << "Durata eveniimentului: ";
+	float d;
+	in >> d;
+	while (d <= 0.0f)
+	{
+		cout << "Durata invalida, introduceti din nou aici: ";
+		in >> d;
+		cout << endl;
+	}
+	ev.setDurata_ev(d);
+	cout << endl;
+
+	if (ev.getNr_zone() > 0)
+	{
+		cout << "Numele zonelor evenimentului: " << endl;
+		string* nume_z = new string[ev.getNr_zone()];
+		for (int i = 0; i < ev.getNr_zone(); i++)
+		{
+			cout << "Zona " << i + 1 << " : ";
+			in >> nume_z[i];
+			cout << endl;
+		}
+		ev.setNume_zoneEv(nume_z, ev.getNr_zone());
+	}
+	return in;
+}
 
 class Bilet: public Eveniment
 {
