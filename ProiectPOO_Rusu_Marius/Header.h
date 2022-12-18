@@ -1,4 +1,5 @@
 #pragma once
+//proiect realizat de Rusu MC Marius-Ioan pentru ASE CSIE Anul 2, semestrul 1 in anul 2022
 #include <cstdlib>
 #include<iostream>
 #include<fstream>
