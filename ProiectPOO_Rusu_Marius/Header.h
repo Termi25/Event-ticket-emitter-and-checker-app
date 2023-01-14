@@ -1205,12 +1205,12 @@ istream& operator>>(istream& in, Bilet& bilet)
 	string np;
 
 	cout << "Nume: ";
-	in >> ws;
+	in >> np;
 	getline(in, np);
 	bilet.setNume(np);
 
 	cout << "Prenume: ";
-	in >> ws;
+	in >> np;
 	getline(in, np);
 	bilet.setPrenume(np);
 
