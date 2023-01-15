@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include "Header.h"
 using namespace std;
@@ -181,12 +182,85 @@ void sub1()
 
 void sub3()
 {
-
+    ifstream f, g, h;
+    if (nr_l > 0)
+    {
+        f.open("locatii.bin", ios::binary | ios::in);
+        if (f.is_open())
+        {
+            f.read(reinterpret_cast<char* const>(&nr_l), sizeof(int));
+            for (int i = 0; i < nr_l; i++)
+            {
+                f.read(reinterpret_cast<char* const>(&locatii[i]), sizeof(Locatie));
+            }
+            f.close();
+        }
+        else
+        {
+            cout << "ERROR!";
+        }
+    }
+    if (nr_ev > 0)
+    {
+        g.open("evenimente.bin", ios::binary| ios::in);
+        if (g.is_open())
+        {
+            g.read(reinterpret_cast<char* const>(&nr_ev), sizeof(int));
+            g.read(reinterpret_cast<char* const>(evenimente), nr_ev * sizeof(Eveniment));
+            g.close();
+        }
+    }
+    if (nr_b > 0)
+    {
+        h.open("bilete.bin", ios::binary| ios::in);
+        if (h.is_open())
+        {
+            h.read(reinterpret_cast<char* const>(&nr_b), sizeof(int));
+            h.read(reinterpret_cast<char* const>(bilete), nr_b * sizeof(Bilet));
+            h.close();
+        }
+    }
+    cout << endl << "Restaurare finalizata!" << endl;
 }
 
 void sub4()
 {
-
+    ofstream f,g,h;
+    if (nr_l > 0)
+    {
+        f.open("locatii.bin", ios::binary);
+        if (f.is_open())
+        {
+            f.write((char *)&nr_l, sizeof(int));
+            f.write(reinterpret_cast<char* const>(locatii), nr_l * sizeof(Locatie));
+            f.close();
+        }
+        else
+        {
+            cout << "ERROR!";
+        }
+    }
+    if (nr_ev > 0)
+    {
+        g.open("evenimente.bin", ios::binary);
+        if (g.is_open())
+        {
+            g.write(reinterpret_cast<char* const>(&nr_ev), sizeof(int));
+            g.write(reinterpret_cast<char* const>(evenimente), nr_ev * sizeof(Eveniment));
+            g.close();
+        }
+    }
+    if (nr_b > 0)
+    {
+        h.open("bilete.bin", ios::binary);
+        if (h.is_open())
+        {
+            h.write(reinterpret_cast<char* const>(&nr_b), sizeof(int));
+            h.write(reinterpret_cast<char* const>(bilete), nr_b * sizeof(Bilet));
+            h.close();
+        }
+    }
+    cout << endl << "Salvare finalizata!"<< endl;
 }
 
 int main()
@@ -194,6 +268,7 @@ int main()
     int x = -1, y,z=-1,w;
     while (x)
     {
+        system("cls");
         cout << "Cum doriti sa porniti programul de generare de bilete?" << endl << endl;
         cout << "------------------------------------------------------" << endl << endl;
         cout << "Tastati '0' daca doriti sa inchideti programul." << endl << endl;

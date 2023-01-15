@@ -170,9 +170,10 @@ public:
 		}
 		else
 		{
-			if (scaun != nullptr)
+			if (scaun != nullptr && zona<nr_zone && rand<nr_randuri && loc < nr_locuri)
 			{
-				int status_scaun = *(*(*(scaun + zona) + rand) + loc);
+				int status_scaun = 0;
+				status_scaun=scaun[zona][rand][loc];
 				return status_scaun;
 			}
 			else
@@ -253,9 +254,9 @@ public:
 
 	void setScaun(int z, int r, int l, int status)
 	{
-		if (z >= 0 && z < nr_zone && r >= 0 && r < nr_randuri && l >= 0 && l < nr_locuri)
+		if (z >= 0 && z < nr_zone && r >= 0 && r < nr_randuri && l >= 0 && l < nr_locuri && scaun!=nullptr)
 		{
-			*(*(*(scaun + z) + r) + l) = status;
+			scaun[z][r][l] = status;
 		}
 		else
 		{
