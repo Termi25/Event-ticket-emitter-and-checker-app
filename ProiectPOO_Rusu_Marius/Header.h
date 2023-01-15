@@ -180,8 +180,7 @@ public:
 			}
 			else
 			{
-				return -1;
-				cout << "Tablou locuri inexistent";
+				return 0;
 			}
 		}
 	}
@@ -627,7 +626,7 @@ istream& operator>>(istream& in, Locatie& t2)
 	return in;
 }
 
-ifstream& operator>>(ifstream& in, Locatie t2)
+ifstream& operator>>(ifstream& in, Locatie& t2)
 {
 	int x = 0, z = 0, w = 0, k = 0, id = 0;
 	in >> id;
