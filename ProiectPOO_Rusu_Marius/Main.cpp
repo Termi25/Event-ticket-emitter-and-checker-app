@@ -116,6 +116,33 @@ void sub24()//afisare locatii
     }
 }
 
+void sub24s(int ID)
+{
+    if (nr_l > 0)
+    {
+        int k = -1;
+        for (int i = 0; i < nr_l; i++)
+        {
+            if (ID == locatii[i].getID())
+            {
+                k = i;
+            }
+        }
+        if (k > -1)
+        {
+            cout << locatii[k] << endl;
+        }
+        else
+        {
+            cout << "ID eronat sau lcoatia nu a fost gasita." << endl;
+        }
+    }
+    else
+    {
+        cout << "Nu exista locatii." << endl;
+    }
+}
+
 void sub25()//afisare evenimente
 {
     if (nr_ev <= 0 || evenimente==nullptr)
@@ -137,6 +164,33 @@ void sub25()//afisare evenimente
     }
 }
 
+void sub25s(int ID)
+{
+    if (nr_ev > 0)
+    {
+        int k = -1;
+        for (int i = 0; i < nr_ev; i++)
+        {
+            if (ID == evenimente[i].getID())
+            {
+                k = i;
+            }
+        }
+        if (k > -1)
+        {
+            cout << evenimente[k] << endl;
+        }
+        else
+        {
+            cout << "ID eronat sau evenimentul nu a fost gasit." << endl;
+        }
+    }
+    else
+    {
+        cout << "Nu exista evenimente." << endl;
+    }
+}
+
 void sub26()//afisare bilete
 {
     if (nr_l > 0 && nr_ev > 0 && nr_b > 0 && locatii!=nullptr && evenimente!=nullptr && bilete!=nullptr)
@@ -151,6 +205,33 @@ void sub26()//afisare bilete
     else
     {
         cout << endl<<"Nu exista bilete introduse." << endl;
+    }
+}
+
+void sub26s(int ID)
+{
+    if (nr_b > 0)
+    {
+        int k = -1;
+        for (int i = 0; i < nr_b; i++)
+        {
+            if (ID == bilete[i].getID())
+            {
+                k = i;
+            }
+        }
+        if (k > -1)
+        {
+            cout << bilete[k] << endl;
+        }
+        else
+        {
+            cout << "ID eronat sau biletul nu a fost gasit." << endl;
+        }
+    }
+    else
+    {
+        cout << "Nu exista bilete." << endl;
     }
 }
 
@@ -237,7 +318,7 @@ void sub3()
     }  
 }
 
-void sub4()
+void sub4()//scriere bilete in fisier binar
 {
     ofstream f;
     f.open("bilete.bin", ios::binary);
@@ -253,7 +334,7 @@ void sub4()
     }
 }
 
-void sub5()
+void sub5()//scriere locatii, evenimente si bilete in fisiere binare
 {
     ofstream f,g,h;
     if (nr_l > 0)
@@ -293,7 +374,7 @@ void sub5()
     cout << endl << "Salvare finalizata!"<< endl;
 }
 
-void sub6()
+void sub6()//scriere locatii si evenimente in data.txt
 {
     ofstream f;
     f.open("date.txt", ios::trunc);
@@ -412,7 +493,23 @@ int main()
                     {
                         system("cls");
                         sub24();
-                        cout << "Refolositi optiunea? (1/0): ";
+                        int contor = 0;
+                        cout << "Doriti sa aflati mai multe detalii despre o locatie?" << endl;
+                        cout << "Da sau nu ? (1/0):";
+                        cin >> contor;
+                        while (contor == 1)
+                        {
+                            int ID = 0;
+                            cout << "Introduceti ID-ul de cautare: ";
+                            cin >> ID;
+                            cout << endl;
+                            sub24s(ID);
+                            cout << endl;
+                            cout << "Doriti sa aflati mai multe detalii despre o locatie?" << endl;
+                            cout << "Da sau nu ? (1/0):";
+                            cin >> contor;
+                        }
+                        cout << "Refolositi optiunea (de afisare locatii) ? (1/0): ";
                         cin >> w;
                     }
                     break;
@@ -421,7 +518,23 @@ int main()
                     {
                         system("cls");
                         sub25();
-                        cout << "Refolositi optiunea? (1/0): ";
+                        int contor = 0;
+                        cout << "Doriti sa aflati mai multe detalii despre un eveniment?" << endl;
+                        cout << "Da sau nu ? (1/0):";
+                        cin >> contor;
+                        while (contor == 1)
+                        {
+                            int ID = 0;
+                            cout << "Introduceti ID-ul de cautare: ";
+                            cin >> ID;
+                            cout << endl;
+                            sub25s(ID);
+                            cout << endl;
+                            cout << "Doriti sa aflati mai multe detalii despre un eveniment?" << endl;
+                            cout << "Da sau nu ? (1/0):";
+                            cin >> contor;
+                        }
+                        cout << "Refolositi optiunea (de afisare a evenimentelor) ? (1/0): ";
                         cin >> w;
                     }
                     break;
@@ -430,13 +543,31 @@ int main()
                     {
                         system("cls");
                         sub26();
-                        cout << "Refolositi optiunea? (1/0): ";
+                        int contor = 0;
+                        cout << "Doriti sa aflati mai multe detalii despre un bilet" << endl;
+                        cout << "Da sau nu ? (1/0):";
+                        cin >> contor;
+                        while (contor == 1)
+                        {
+                            int ID = 0;
+                            cout << "Introduceti ID-ul de cautare: ";
+                            cin >> ID;
+                            cout << endl;
+                            sub26s(ID);
+                            cout << endl;
+                            cout << "Doriti sa aflati mai multe detalii despre un bilet?" << endl;
+                            cout << "Da sau nu ? (1/0):";
+                            cin >> contor;
+                        }
+                        cout << "Refolositi optiunea (de afisare a biletelor) ? (1/0): ";
                         cin >> w;
                     }
                     break;
                 }
                 system("cls");
-                cout << "Doriti sa mai utilizati optiunile de editare? (1/0): ";
+                cout << endl << endl;
+                cout << "-----------------------------------------------------"<<endl;
+                cout<< "Doriti sa mai utilizati optiunile de editare? (1/0): ";
                 cin >> y;
                 system("cls");
             }

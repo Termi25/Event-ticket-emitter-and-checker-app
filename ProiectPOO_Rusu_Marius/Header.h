@@ -474,19 +474,26 @@ Locatie operator+(int x, Locatie t2)
 
 ostream& operator<<(ostream& out, Locatie t2)
 {
-	out << t2.getID() << endl;
-	out << t2.getAdresa() << endl;
-	out << t2.getNr_locuri_total() << endl;
-	out << t2.getNr_locuri() << endl;
-	out << t2.getNr_randuri() << endl;
-	out << t2.getNr_zone() << endl;
+	out << "ID locatie: "<<t2.getID() << endl;
+	out << "Adresa locatiei: "<<t2.getAdresa() << endl;
+	out << "Numar total de locuri ale locatiei: "<<t2.getNr_locuri_total() << endl;
+	out << "Numar locuri pe fiecare rand: "<<t2.getNr_locuri() << endl;
+	out << "Numar randuri pe fiecare zona: "<<t2.getNr_randuri() << endl;
+	out << "Numar zone: "<<t2.getNr_zone() << endl;
+	cout << endl << "Tabel locuri: " << endl;
+	cout << "---------------------------------" << endl;
 	for (int i = 0; i < t2.getNr_zone(); i++)
 	{
 		for (int j = 0; j < t2.getNr_randuri(); j++)
 		{
 			for (int g = 0; g < t2.getNr_locuri(); g++)
 			{
-				out << t2.getScaun(g, j, i) % 10<<' ';
+				out << '['<<i+1<<j+1<<g+1 << ']'<<' ';
+			}
+			out << endl;
+			for (int g = 0; g < t2.getNr_locuri(); g++)
+			{
+				out << "  "<<t2.getScaun(g, j, i) % 10 << "   ";
 			}
 			out << endl;
 		}
@@ -1027,18 +1034,20 @@ public:
 
 ostream& operator<<(ostream& out, Eveniment ev)
 {
-	out << ev.getID() << endl;
-	out << ev.getData_ev() << endl;
-	out << ev.getOra_ev() << endl;
-	out << ev.getDenumire_ev() << endl;
-	out << ev.getTip_ev() << endl;
-	out << ev.getDurata_ev() << endl;
-	out << ev.getNr_zone() << endl;
+	out << "ID eveniment: "<<ev.getID() << endl;
+	ev.sablonizareOra5();
+	out << "Data eveniment: "<<ev.getData_ev() << endl;
+	out << "Ora eveniment: "<<ev.getOra_ev() << endl;
+	out << "Denumire eveniment: "<<ev.getDenumire_ev() << endl;
+	out << "Tip eveniment: "<<ev.getTip_ev() << endl;
+	out << "Durata eveniment: "<<ev.getDurata_ev() << endl;
+	out << "Nr zone eveniment: "<<ev.getNr_zone() << endl;
 	if (ev.getNr_zone() > 0)
 	{
+		cout << "Nume zone eveniment: " << endl;
 		for (int i = 0; i < ev.getNr_zone(); i++)
 		{
-			out << ev.getNume_zona(i) << endl;
+			out << i+1<<')'<<ev.getNume_zona(i) << endl;
 		}
 	}
 	return out;
@@ -1181,6 +1190,7 @@ ifstream& operator>>(ifstream& in, Eveniment& ev)
 ofstream& operator<<(ofstream& out, Eveniment& ev)
 {
 	out << ev.getID() << endl;
+	ev.sablonizareOra5();
 	out << ev.getData_ev() << endl;
 	out << ev.getOra_ev() << endl;
 	out << ev.getDenumire_ev() << endl;
