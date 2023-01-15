@@ -15,10 +15,9 @@ public:
 
 class Locatie : public ObiectIdentitate {
 private:
-	int nr_locuri, nr_randuri, nr_zone, nr_locuri_total;
+	int nr_locuri, nr_randuri, nr_zone, nr_locuri_total,ID;
 	int*** scaun=nullptr;
 	string adresa;
-	const int ID;
 
 public:
 
@@ -28,7 +27,7 @@ public:
 		return rand();
 	}
 
-	Locatie() :ID(creareID())
+	Locatie()
 	{
 		nr_locuri_total = 0;
 		nr_locuri = 0;
@@ -36,14 +35,16 @@ public:
 		nr_zone = 0;
 		scaun = nullptr;
 		adresa = 'P';
+		ID = creareID();
 	}
 
-	Locatie(int Nr_loc, int Nr_rand, int Nr_zone, int nr_locuri_total, int*** Scaune, string adresa) :ID(creareID())
+	Locatie(int Nr_loc, int Nr_rand, int Nr_zone, int nr_locuri_total, int*** Scaune, string adresa,int ID)
 	{
 		this->nr_locuri = Nr_loc;
 		this->nr_randuri = Nr_rand;
 		this->nr_zone = Nr_zone;
 		this->nr_locuri_total = nr_locuri_total;
+		this->ID = ID;
 		if (Nr_zone > 0 && Nr_loc > 0 && Nr_rand > 0 && Scaune != nullptr)
 		{
 			scaun = new int** [Nr_zone];
@@ -97,12 +98,13 @@ public:
 		}
 	}
 
-	Locatie(const Locatie& locatie) :ID(creareID())
+	Locatie(const Locatie& locatie)
 	{
 		this->nr_locuri = locatie.nr_locuri;
 		this->nr_randuri = locatie.nr_randuri;
 		this->nr_zone = locatie.nr_zone;
 		this->nr_locuri_total = locatie.nr_locuri_total;
+		this->ID = locatie.ID;
 		if (nr_zone > 0 && nr_locuri > 0 && nr_randuri > 0 && locatie.scaun != nullptr)
 		{
 			scaun = new int** [nr_zone];
@@ -170,7 +172,7 @@ public:
 		}
 		else
 		{
-			if (scaun != nullptr && zona<nr_zone && rand<nr_randuri && loc < nr_locuri)
+			if (scaun != nullptr)
 			{
 				int status_scaun = 0;
 				status_scaun=scaun[zona][rand][loc];
@@ -194,11 +196,23 @@ public:
 		return this->ID;
 	}
 	/*
-		int nr_locuri,nr_randuri,nr_zone,nr_locuri_total;
+		int nr_locuri,nr_randuri,nr_zone,nr_locuri_total,ID;
 		int*** scaun;
 		string adresa;
-		const int ID;
 	*/
+
+	void setID(int x)
+	{
+		if (x > 0)
+		{
+			this->ID= x;
+			cout << "Setat" << endl;
+		}
+		else
+		{
+			cout << " Valoarea introdusa este invalida" << endl;
+		}
+	}
 
 	void setNr_locuri(int x)
 	{
@@ -458,36 +472,33 @@ Locatie operator+(int x, Locatie t2)
 
 ostream& operator<<(ostream& out, Locatie t2)
 {
-	out << "Adresa locatiei: " << t2.getAdresa() << endl;
-	out << "Numar locuri total locatie: " << t2.getNr_locuri_total() << endl;
-	out << "Numar locuri per rand locatie: " << t2.getNr_locuri() << endl;
-	out << "Numar randuri locatie: " << t2.getNr_randuri() << endl;
-	out << "Numar zone locatie: " << t2.getNr_zone() << endl;
-	out << "Tablou status locuri: " << endl;
+	out << t2.getID() << endl;
+	out << t2.getAdresa() << endl;
+	out << t2.getNr_locuri_total() << endl;
+	out << t2.getNr_locuri() << endl;
+	out << t2.getNr_randuri() << endl;
+	out << t2.getNr_zone() << endl;
 	for (int i = 0; i < t2.getNr_zone(); i++)
 	{
 		for (int j = 0; j < t2.getNr_randuri(); j++)
 		{
 			for (int g = 0; g < t2.getNr_locuri(); g++)
 			{
-				out <<"  "<<'['<< i + 1 << j + 1 << g + 1 << ']'<<"  ";
-			}
-			out << endl;
-			for (int g = 0; g < t2.getNr_locuri(); g++)
-			{
-				out << "   " <<'['<< t2.getScaun(g, j, i) % 10 <<']'<< "   ";
+				out << t2.getScaun(g, j, i) % 10<<' ';
 			}
 			out << endl;
 		}
-		return out;
+		out << endl;
 	}
 	return out;
 }
 
 istream& operator>>(istream& in, Locatie& t2)
 {
-	int x=0,z=0,w=0,k=0;
+	int x=0,z=0,w=0,k=0,id=0;
 	string y;
+	t2.setID(t2.creareID());
+
 	cout << "Adresa locatiei: ";
 	in >> ws;
 	getline(in,y);
@@ -597,7 +608,7 @@ istream& operator>>(istream& in, Locatie& t2)
 				for (int g = 0; g < t2.getNr_locuri(); g++)
 				{
 					cout << "   " << '[' << i + 1 << j + 1 << g + 1 << ']' << "    ";
-					input_tablou[i][j][g] =(int) 0;
+						input_tablou[i][j][g] = 0;
 				}
 				cout << endl;
 				for (int g = 0; g < t2.getNr_locuri(); g++)
@@ -620,8 +631,7 @@ private:
 	string data_eveniment, ora_eveniment, denumire, tip_eveniment;
 	float durata;
 	string* nume_zone;
-	int nr_zone;
-	const int ID;
+	int nr_zone,ID;
 
 public:
 
@@ -631,7 +641,7 @@ public:
 		return rand();
 	}
 
-	Eveniment():ID(creareID())
+	Eveniment()
 	{
 
 		data_eveniment = "";
@@ -640,18 +650,20 @@ public:
 		tip_eveniment = "";
 		durata = 0.0f;
 		nume_zone = nullptr;
+		ID = creareID();
 	}
 /*string data_eveniment, ora_eveniment, denumire,tip_eveniment;
 	float durata;
 	string* nume_zone;
 */
-	Eveniment(string data_eveniment, string ora_eveniment, string denumire, string tip_eveniment, float durata, string* nume_zoneB,int nr_zone):ID(creareID())
+	Eveniment(string data_eveniment, string ora_eveniment, string denumire, string tip_eveniment, float durata, string* nume_zoneB,int nr_zone,int ID)
 	{
 		this->data_eveniment = data_eveniment;
 		this->ora_eveniment = ora_eveniment;
 		this->denumire = denumire;
 		this->tip_eveniment = tip_eveniment;
 		this->durata = durata;
+		this->ID = ID;
 		if (nr_zone > 0 && nume_zoneB!=nullptr)
 		{
 			this->nr_zone=nr_zone;
@@ -680,13 +692,14 @@ public:
 		}
 	}
 
-	Eveniment(const Eveniment& eveniment) :ID(creareID())
+	Eveniment(const Eveniment& eveniment)
 	{
 		this->data_eveniment =eveniment.data_eveniment;
 		this->ora_eveniment = eveniment.ora_eveniment;
 		this->denumire = eveniment.denumire;
 		this->tip_eveniment = eveniment.tip_eveniment;
 		this->durata = eveniment.durata;
+		this->ID = eveniment.ID;
 		if (eveniment.nume_zone != nullptr && eveniment.nr_zone>0)
 		{
 			delete[] nume_zone;
@@ -747,7 +760,7 @@ public:
 		return nr_zone;
 	}
 
-	const int getID()
+	int getID()
 	{
 		return ID;
 	}
@@ -928,23 +941,19 @@ public:
 
 ostream& operator<<(ostream& out, Eveniment ev)
 {
-	out << "ID eveniment: " << ev.getID() << endl;
-	out << "Data evenimentului: " << ev.getData_ev() << endl;
-	out << "Ora evenimentului: " << ev.getOra_ev() << endl;
-	out << "Denumirea evenimentului: " << ev.getDenumire_ev() << endl;
-	out << "Tip eveniment: " << ev.getTip_ev() << endl;
-	out << "Durata evenimentului: " << ev.getDurata_ev() << endl;
-	if (ev.getNr_zone() > 0 && ev.nume_zone != nullptr)
+	out << ev.getID() << endl;
+	out << ev.getData_ev() << endl;
+	out << ev.getOra_ev() << endl;
+	out << ev.getDenumire_ev() << endl;
+	out << ev.getTip_ev() << endl;
+	out << ev.getDurata_ev() << endl;
+	out << ev.getNr_zone() << endl;
+	if (ev.getNr_zone() > 0)
 	{
-		out << "Nume zone: " << endl;
 		for (int i = 0; i < ev.getNr_zone(); i++)
 		{
-			out << i << '.' << ev.getNume_zona(i) << endl;
+			out << ev.getNume_zona(i) << endl;
 		}
-	}
-	else
-	{
-		out << "Vectorul de nume de zone este invalid." << endl;
 	}
 	return out;
 }
@@ -953,7 +962,7 @@ ostream& operator<<(ostream& out, Eveniment ev)
 	string data_eveniment, ora_eveniment, denumire, tip_eveniment;
 	float durata;
 	string* nume_zone;
-	int nr_zone;
+	int nr_zone,ID;
 */
 
 istream& operator>>(istream& in, Eveniment& ev)
@@ -1071,10 +1080,9 @@ public:
 
 /*
 	static string tipBilet;
-	int nr_locB, nr_randB, nr_zonaB;
+	int nr_locB, nr_randB, nr_zonaB,ID;
 	string nume;
 	string prenume;
-	const int ID;
 	Locatie locatie;
 	Eveniment ev;
 */
@@ -1143,53 +1151,22 @@ public:
 		nr_locB = x;
 	}
 
-	int validareNr_locB(int x, Locatie locatie)
-	{
-		if (x >= 0 && x < locatie.getNr_locuri() && locatie.getScaun(nr_zonaB, nr_randB, x) == 0)
-		{
-			locatie.setScaun(nr_zonaB, nr_randB, nr_locB, 0);
-			locatie.setScaun(nr_zonaB, nr_randB, x, ID);
-			nr_locB = x;
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
 	void setNr_randB(int x)
 	{
 		nr_randB = x;
 	}
 
-	int validareNr_randB(int x, Locatie locatie)
-	{
-		if (x >= 0 && x < locatie.getNr_randuri() && locatie.getScaun(nr_zonaB, x, nr_locB) == 0)
-		{
-			locatie.setScaun(nr_zonaB, nr_randB, nr_locB, 0);
-			locatie.setScaun(nr_zonaB, x, nr_locB, ID);
-			nr_randB = x;
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
 
 	void setNr_zonaB(int x)
 	{
 		nr_zonaB = x;
 	}
 
-	int validareNr_zonaB(int x, Locatie locatie)
+	int validare(Locatie locatie)
 	{
-		if (x >= 0 && x < locatie.getNr_zone() && locatie.getScaun(x, nr_randB, nr_locB) == 0)
+		if ( nr_locB<locatie.getNr_locuri() && nr_randB<locatie.getNr_randuri() && nr_zonaB< locatie.getNr_zone() && locatie.getScaun(nr_zonaB, nr_randB, nr_locB) == 0)
 		{
-			locatie.setScaun(nr_zonaB, nr_randB, nr_locB, 0);
-			locatie.setScaun(x, nr_randB, nr_locB, ID);
-			nr_zonaB = x;
+			locatie.setScaun(nr_zonaB, nr_randB, nr_locB, ID);
 			return 1;
 		}
 		else
@@ -1200,26 +1177,16 @@ public:
 
 	void validarebilet(Locatie locatie)
 	{
-		int l=0, r=0, z=0;
-		while (validareNr_locB(nr_locB, locatie) == 0)
+		int l = 0, r = 0, z = 0;
+		while (validare(locatie) == 0)
 		{
 			cout << "Locul nu este disponibil, alegeti alt loc" << endl;
 			cout << "Locul nou este: ";
 			cin >> l;
 			setNr_locB(l);
-			cout << endl;
-		}
-		while (validareNr_randB(nr_randB, locatie) == 0)
-		{
-			cout << "Randul nu este disponibil, alegeti alt rand" << endl;
 			cout << "Randul nou este: ";
 			cin >> r;
 			setNr_randB(r);
-			cout << endl;
-		}
-		while (validareNr_zonaB(nr_zonaB, locatie) == 0)
-		{
-			cout << "Locul nu este disponibil, alegeti alt loc" << endl;
 			cout << "Locul nou este: ";
 			cin >> z;
 			setNr_zonaB(z);
@@ -1235,6 +1202,11 @@ public:
 	void setPrenume(string prenume)
 	{
 		this->prenume = prenume;
+	}
+	
+	void setID(int x)
+	{
+		*(int*)&ID = x;
 	}
 	
 
@@ -1314,6 +1286,9 @@ ostream& operator<<(ostream& out, Bilet bilet)
 	out << "Tip bilet: " << bilet.tipBilet << endl;
 	out << "Numar loc, rand si zona biletului: " << bilet.getNr_locB() << ' ' << bilet.getNr_randB() << ' ' << bilet.getNr_zonaB()<< endl;
 	out << "Nume si prenume beneficiar: " << bilet.getNume() << ' ' << bilet.getPrenume() << endl;
+	out << "ID locatie: " << bilet.getID_loc() << endl;
+	out << "ID eveniment: " << bilet.getID_ev() << endl;
+	out << "----------------------------------------------" << endl;
 	return out;
 }
 
@@ -1343,12 +1318,46 @@ istream& operator>>(istream& in, Bilet& bilet)
 	string np;
 
 	cout << endl<<"Nume: ";
-	in >> np;
+	in >> ws;
 	getline(in, np);
 	bilet.setNume(np);
 
 	cout << "Prenume: ";
-	in >> np;
+	in >> ws;
+	getline(in, np);
+	bilet.setPrenume(np);
+
+	return in;
+}
+
+ifstream& operator>>(ifstream& in, Bilet& bilet)
+{
+	int z, r, l, il, ie,id;
+	in >> id;
+	bilet.setID(id);
+
+	in >> il;
+	in >> ie;
+
+	bilet.setID_loc(il);
+	bilet.setID_ev(ie);
+
+	in >> z;
+	in >> r;
+	in >> l;
+
+
+	bilet.setNr_locB(l);
+	bilet.setNr_randB(r);
+	bilet.setNr_zonaB(z);
+
+	string np;
+
+	in >> ws;
+	getline(in, np);
+	bilet.setNume(np);
+
+	in >> ws;
 	getline(in, np);
 	bilet.setPrenume(np);
 

@@ -66,7 +66,25 @@ void sub24()//afisare locatii
     {
         for (int i = 0; i < nr_l; i++)
         {
-            cout << i+1 << ')' <<"ID locatie: "<<locatii[i].getID()<<' '<< locatii[i].getAdresa() << "- capacitate de locuri: " << locatii[i].getNr_locuri_total() << " dintre care sunt libere: " << locatii[i].nr_locuri_libere() << endl;
+            cout << i+1 << ')' <<"ID locatie: "<<locatii[i].getID()<<"- adresa locatiei: " << locatii[i].getAdresa() << "- capacitate de locuri: " << locatii[i].getNr_locuri_total() << " dintre care sunt libere: " << locatii[i].nr_locuri_libere() << endl;
+            /*for (int i = 0; i < locatii[i].getNr_zone(); i++)
+            {
+                for (int j = 0; j < locatii[i].getNr_randuri(); j++)
+                {
+                    for (int g = 0; g < locatii[i].getNr_locuri(); g++)
+                    {
+                        cout << "  " << '[' << i + 1 << j + 1 << g + 1 << ']' << "  ";
+                    }
+                    cout << endl;
+                    for (int g = 0; g < locatii[i].getNr_locuri(); g++)
+                    {
+                        cout << "   " << '[' << locatii[i].getScaun(g, j, i) % 10 << ']' << "   ";
+                    }
+                    cout << endl;
+                }
+                cout << endl;
+            }
+            cout << "-----------------------------------------------------------------------------------------------" << endl;*/
         }
     }
 }
@@ -82,6 +100,12 @@ void sub25()//afisare evenimente
         for (int i = 0; i < nr_ev; i++)
         {
             cout << i + 1 << ')' << "ID eveniment: "<<evenimente[i].getID()<<' '<< evenimente[i].getDenumire_ev() << " - de tip: " << evenimente[i].getTip_ev() << " - pe data de: " << evenimente[i].getData_ev() << " - la ora: " << evenimente[i].getOra_ev() << " - cu durata de: " << evenimente[i].getDurata_ev() << " minute" << endl << endl;
+            /*cout << "Zonele acestui eveniment:" << endl;
+            for (int i = 0; i < evenimente[i].getNr_zone(); i++)
+            {
+                cout << i << ')' << evenimente[i].getNume_zona(i)<<endl;
+            }
+            cout << "-----------------------------------------------------------------------------------------" << endl << endl;*/
         }
     }
 }
@@ -105,7 +129,6 @@ void sub26()//afisare bilete
 
 void sub23()//introducere de bilet in program
 {
-    int x;
     if (nr_l == 0 || locatii == nullptr || nr_ev==0 || evenimente == nullptr)
     {
         cout << "Inainte de a introduce bilete, este nevoie sa introduceti minim o locatie si un eveniment" << endl;
@@ -120,8 +143,6 @@ void sub23()//introducere de bilet in program
             cout << endl;
             cout << "Ce locatie doriti pentru bilet ?" << endl;
             sub24();
-
-            int y;
 
             cout << endl;
             cout << "Ce eveniment doriti pentru bilet ?" << endl;
@@ -151,8 +172,6 @@ void sub23()//introducere de bilet in program
             cout << "Ce locatie doriti pentru bilet ?" << endl;
             sub24();
 
-            int y;
-
             cout << endl;
             cout << "Ce eveniment doriti pentru bilet ?" << endl;
             sub25();
@@ -177,50 +196,46 @@ void sub23()//introducere de bilet in program
 
 void sub1()
 {
+    ifstream f;
+    f.open("date.txt", ios::in);
+    if (f.is_open())
+    {
+        f >> nr_l;
+        locatii = new Locatie[nr_l];
+        for (int i = 0; i < nr_l; i++)
+        {
+            f >> locatii[i];
+        }
 
+        f >> nr_ev;
+        evenimente = new Eveniment[nr_ev];
+        for (int i = 0; i < nr_ev; i++)
+        {
+            f >> evenimente[i];
+        }
+        f.close();
+    }
+    else
+    {
+        cout << "ERROR!";
+    }
 }
 
 void sub3()
 {
-    ifstream f, g, h;
-    if (nr_l > 0)
+    ifstream f;
+    f.open("bilete.bin", ios::binary);
+    if (f.is_open())
     {
-        f.open("locatii.bin", ios::binary | ios::in);
-        if (f.is_open())
+        f.read((char*)&nr_b, sizeof(int));
+        unsigned int dim = nr_b * sizeof(Bilet);
+        for (int i = 0; i < nr_b; i++)
         {
-            f.read(reinterpret_cast<char* const>(&nr_l), sizeof(int));
-            for (int i = 0; i < nr_l; i++)
-            {
-                f.read(reinterpret_cast<char* const>(&locatii[i]), sizeof(Locatie));
-            }
-            f.close();
+            f.read(reinterpret_cast<char* const>(bilete), dim);
         }
-        else
-        {
-            cout << "ERROR!";
-        }
+        cout << endl << "Restaurare finalizata!" << endl;
     }
-    if (nr_ev > 0)
-    {
-        g.open("evenimente.bin", ios::binary| ios::in);
-        if (g.is_open())
-        {
-            g.read(reinterpret_cast<char* const>(&nr_ev), sizeof(int));
-            g.read(reinterpret_cast<char* const>(evenimente), nr_ev * sizeof(Eveniment));
-            g.close();
-        }
-    }
-    if (nr_b > 0)
-    {
-        h.open("bilete.bin", ios::binary| ios::in);
-        if (h.is_open())
-        {
-            h.read(reinterpret_cast<char* const>(&nr_b), sizeof(int));
-            h.read(reinterpret_cast<char* const>(bilete), nr_b * sizeof(Bilet));
-            h.close();
-        }
-    }
-    cout << endl << "Restaurare finalizata!" << endl;
+    
 }
 
 void sub4()
@@ -263,6 +278,37 @@ void sub4()
     cout << endl << "Salvare finalizata!"<< endl;
 }
 
+void sub5()
+{
+    ofstream f;
+    f.open("date.txt", ios::trunc);
+    if (f.is_open())
+    {
+        if (nr_l > 0)
+        {
+            f << nr_l << endl;
+            for (int i = 0; i < nr_l; i++)
+            {
+                f << locatii[i]<<endl;
+            }
+            cout << endl;
+        }
+        if (nr_ev > 0)
+        {
+            f << nr_ev << endl;
+            for (int i = 0; i < nr_ev; i++)
+            {
+                f << evenimente[i]<<endl;
+            }
+        }
+        f.close();
+    }
+    else
+    {
+        cout << "ERROR!";
+    }
+}
+
 int main()
 {
     int x = -1, y,z=-1,w;
@@ -277,11 +323,13 @@ int main()
         cout << "-----------------------------------------------------------------------------------------" << endl << endl;
         cout << "Tastati '2' daca doriti sa introduceti manual datele (locatii si evenimente)." << endl << endl;
         cout << "-----------------------------------------------------------------------------------------------" << endl << endl;
-        cout << "Tastati '3' daca ati repornit aplicatia si vreti sa incarcati datele deja introduse si salvate." << endl << endl;
+        cout << "Tastati '3' daca salvati biletele in fisier binar." << endl << endl;
         cout << "-----------------------------------------------------------------------------------------------" << endl << endl;
-        cout << "Tastati '4' daca vreti sa salvati datele introduse." << endl << endl;
-        cout << "---------------------------------------------------" << endl << endl;
-        cout << "Optiune (0-4) introduceti valoare: ";
+        cout << "Tastati '4' daca vreti sa salvati datele introduse in fisiere binare." << endl << endl;
+        cout << "-------------------------------------------------------------------------" << endl << endl;
+        cout << "Tastati '5' daca vreti sa salvati locatii si evenimentele in fisier text." << endl << endl;
+        cout << "-------------------------------------------------------------------------" << endl << endl;
+        cout << "Optiune (0-5) introduceti valoare: ";
         cin >> x;
         y = 1;
         switch (x)
@@ -389,6 +437,15 @@ int main()
             {
                 system("cls");
                 sub4();
+                cout << "Refolositi optiunea? (1/0): ";
+                cin >> y;
+            }
+            break;
+        case 5:
+            while (y)
+            {
+                system("cls");
+                sub5();
                 cout << "Refolositi optiunea? (1/0): ";
                 cin >> y;
             }
