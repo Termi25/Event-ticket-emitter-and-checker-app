@@ -324,13 +324,15 @@ int main()
         cout << "-----------------------------------------------------------------------------------------" << endl << endl;
         cout << "Tastati '2' daca doriti sa introduceti manual datele (locatii si evenimente)." << endl << endl;
         cout << "-----------------------------------------------------------------------------" << endl << endl;
-        cout << "Tastati '3' daca salvati biletele in fisier binar." << endl << endl;
+        cout << "Tastati '3' daca incarcati biletele din fisierul binar." << endl << endl;
         cout << "--------------------------------------------------" << endl << endl;
-        cout << "Tastati '4' daca vreti sa salvati datele introduse in fisiere binare." << endl << endl;
+        cout << "Tastati '4' daca salvati biletele in fisier binar." << endl << endl;
+        cout << "--------------------------------------------------" << endl << endl;
+        cout << "Tastati '5' daca vreti sa salvati datele introduse in fisiere binare." << endl << endl;
         cout << "-------------------------------------------------------------------------" << endl << endl;
-        cout << "Tastati '5' daca vreti sa salvati locatii si evenimentele in fisier text." << endl << endl;
+        cout << "Tastati '6' daca vreti sa salvati locatii si evenimentele in fisier text." << endl << endl;
         cout << "-------------------------------------------------------------------------" << endl << endl;
-        cout << "Optiune (0-5) introduceti valoare: ";
+        cout << "Optiune (0-6) introduceti valoare: ";
         cin >> x;
         y = 1;
         switch (x)
