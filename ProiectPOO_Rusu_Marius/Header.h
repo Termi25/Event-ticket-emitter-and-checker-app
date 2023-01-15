@@ -451,6 +451,8 @@ public:
 	friend Locatie operator+(int, Locatie);
 	friend ostream& operator<<(ostream&, Locatie);
 	friend istream& operator>>(istream&, Locatie&);
+	friend ofstream& operator<<(ofstream&, Locatie);
+	friend ifstream& operator>>(ifstream&, Locatie&);
 };
 
 Locatie operator+(int x, Locatie t2)
@@ -625,6 +627,84 @@ istream& operator>>(istream& in, Locatie& t2)
 	return in;
 }
 
+ifstream& operator>>(ifstream& in, Locatie t2)
+{
+	int x = 0, z = 0, w = 0, k = 0, id = 0;
+	in >> id;
+	string y;
+	t2.setID(id);
+
+	in >> ws;
+	getline(in, y);
+	t2.setAdresa(y);
+
+	in >> k;
+	t2.setNr_locuri_total(k);
+
+	in >> x;
+	t2.setNr_locuri(x);
+
+	in >> w;
+	t2.setNr_randuri(w);
+
+	in >> z;
+	t2.setNr_zone(z);
+
+
+	int*** input_tablou = new int** [t2.getNr_zone()];
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		*(input_tablou + i) = new int* [t2.getNr_randuri()];
+	}
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		for (int j = 0; j < t2.getNr_randuri(); j++)
+		{
+			*(*(input_tablou + i) + j) = new int[t2.getNr_locuri()];
+		}
+	}
+
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		for (int j = 0; j < t2.getNr_randuri(); j++)
+		{
+			for (int g = 0; g < t2.getNr_locuri(); g++)
+			{
+				in >> *(*(*(input_tablou + i) + j) + g);
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
+	
+
+	t2.setScaune(input_tablou, t2.getNr_zone(), t2.getNr_randuri(), t2.getNr_locuri());
+	return in;
+}
+
+ofstream& operator<<(ofstream& out, Locatie t2)
+{
+	out << t2.getID() << endl;
+	out << t2.getAdresa() << endl;
+	out << t2.getNr_locuri_total() << endl;
+	out << t2.getNr_locuri() << endl;
+	out << t2.getNr_randuri() << endl;
+	out << t2.getNr_zone() << endl;
+	for (int i = 0; i < t2.getNr_zone(); i++)
+	{
+		for (int j = 0; j < t2.getNr_randuri(); j++)
+		{
+			for (int g = 0; g < t2.getNr_locuri(); g++)
+			{
+				out << t2.getScaun(g, j, i) << ' ';
+			}
+			out << endl;
+		}
+		out << endl;
+	}
+	return out;
+}
+
 class Eveniment : public ObiectIdentitate
 {
 private:
@@ -768,9 +848,13 @@ public:
 	string data_eveniment, ora_eveniment, denumire,tip_eveniment;
 	float durata;
 	string* nume_zone;
-	int nr_zone;
-	const int ID;
+	int nr_zone,ID;
 */
+
+	void setID(int x)
+	{
+		this->ID = x;
+	}
 
 	void setData_ev(string data_evC)
 	{
@@ -930,6 +1014,8 @@ public:
 
 	friend ostream& operator<<(ostream&, Eveniment);
 	friend istream& operator>>(istream&, Eveniment&);
+	friend ifstream& operator>>(ifstream&, Eveniment&);
+	friend ofstream& operator<<(ofstream&, Eveniment&);
 };
 
 /*
@@ -1033,6 +1119,84 @@ istream& operator>>(istream& in, Eveniment& ev)
 	return in;
 }
 
+ifstream& operator>>(ifstream& in, Eveniment& ev)
+{
+	int id = 0;
+	in >> id;
+	ev.setID(id);
+
+	string y;
+
+	in >> ws;
+	getline(in, y);
+	ev.setData_ev(y);
+	cout << endl;
+
+	in >> ws;
+	getline(in, y);
+	ev.setOra_ev(y);
+	cout << endl;
+
+	in >> ws;
+	getline(in, y);
+	ev.setDenumire_ev(y);
+	cout << endl;
+
+	in >> ws;
+	getline(in, y);
+	ev.setTip_ev(y);
+	cout << endl;
+
+	float d;
+	in >> d;
+	while (d <= 0.0f)
+	{
+		in >> d;
+		cout << endl;
+	}
+	ev.setDurata_ev(d);
+	cout << endl;
+
+	int x;
+	in >> x;
+	ev.setNr_zone(x);
+	cout << endl;
+
+	if (x > 0)
+	{
+		string nume;
+		string* nume_z = new string[x];
+		for (int i = 0; i < x; i++)
+		{
+			in >> ws;
+			getline(in, nume);
+			nume_z[i] = nume;
+			cout << endl;
+		}
+		ev.setNume_zonaEv(nume_z, x);
+	}
+	return in;
+}
+
+ofstream& operator<<(ofstream& out, Eveniment& ev)
+{
+	out << ev.getID() << endl;
+	out << ev.getData_ev() << endl;
+	out << ev.getOra_ev() << endl;
+	out << ev.getDenumire_ev() << endl;
+	out << ev.getTip_ev() << endl;
+	out << ev.getDurata_ev() << endl;
+	out << ev.getNr_zone() << endl;
+	if (ev.getNr_zone() > 0)
+	{
+		for (int i = 0; i < ev.getNr_zone(); i++)
+		{
+			out << ev.getNume_zona(i) << endl;
+		}
+	}
+	return out;
+}
+
 class Bilet : public ObiectIdentitate
 {
 private:
@@ -1129,11 +1293,10 @@ public:
 
 /*
 	static string tipBilet;
-	int nr_locB, nr_randB, nr_zonaB;
+	int nr_locB, nr_randB, nr_zonaB,ID_locatie,ID_eveniment;
 	string nume;
 	string prenume;
 	const int ID;
-	int ID_locatie,ID_eveniment;
 */
 
 	void setID_loc(int x)
@@ -1222,11 +1385,10 @@ public:
 
 /*
 	static string tipBilet;
-	int nr_locB, nr_randB, nr_zonaB;
+	int nr_locB, nr_randB, nr_zonaB,ID_locatie,ID_eveniment;
 	string nume;
 	string prenume;
 	const int ID;
-	int ID_locatie,ID_eveniment;
 */
 
 	Bilet operator=(const Bilet& bilet)
@@ -1268,16 +1430,16 @@ public:
 
 	friend ostream& operator<<(ostream&, Bilet);
 	friend istream& operator>>(istream&, Bilet&);
+	friend ifstream& operator>>(ifstream&, Bilet&);
 };
 string Bilet::tipBilet = "Bilet pentru eveniment";
 
 /*
 	static string tipBilet;
-	int nr_locB, nr_randB, nr_zonaB;
+	int nr_locB, nr_randB, nr_zonaB,ID_locatie,ID_eveniment;
 	string nume;
 	string prenume;
 	const int ID;
-	int ID_locatie,ID_eveniment;
 */
 
 ostream& operator<<(ostream& out, Bilet bilet)
