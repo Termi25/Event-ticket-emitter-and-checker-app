@@ -9,6 +9,33 @@ Eveniment* evenimente=nullptr;
 Bilet* bilete=nullptr;
 int nr_l=0, nr_ev=0, nr_b=0;
 
+
+void sub1()
+{
+    ifstream f;
+    f.open("date.txt", ios::in);
+    if (f.is_open())
+    {
+        f >> nr_l;
+        locatii = new Locatie[nr_l];
+        for (int i = 0; i < nr_l; i++)
+        {
+            f >> locatii[i];
+        }
+
+        f >> nr_ev;
+        evenimente = new Eveniment[nr_ev];
+        for (int i = 0; i < nr_ev; i++)
+        {
+            f >> evenimente[i];
+        }
+        f.close();
+    }
+    else
+    {
+        cout << "ERROR!";
+    }
+}
 void sub21()//introducere de locatie in program
 {
     if (nr_l == 0)
@@ -194,33 +221,6 @@ void sub23()//introducere de bilet in program
     }
 }
 
-void sub1()
-{
-    ifstream f;
-    f.open("date.txt", ios::in);
-    if (f.is_open())
-    {
-        f >> nr_l;
-        locatii = new Locatie[nr_l];
-        for (int i = 0; i < nr_l; i++)
-        {
-            f >> locatii[i];
-        }
-
-        f >> nr_ev;
-        evenimente = new Eveniment[nr_ev];
-        for (int i = 0; i < nr_ev; i++)
-        {
-            f >> evenimente[i];
-        }
-        f.close();
-    }
-    else
-    {
-        cout << "ERROR!";
-    }
-}
-
 void sub3()
 {
     ifstream f;
@@ -234,11 +234,26 @@ void sub3()
             f.read(reinterpret_cast<char* const>(bilete), dim);
         }
         cout << endl << "Restaurare finalizata!" << endl;
-    }
-    
+    }  
 }
 
 void sub4()
+{
+    ofstream f;
+    f.open("bilete.bin", ios::binary);
+    if (f.is_open())
+    {
+        f.write((char*)&nr_b, sizeof(int));
+        unsigned int dim = nr_b * sizeof(Bilet);
+        for (int i = 0; i < nr_b; i++)
+        {
+            f.write(reinterpret_cast<char* const>(bilete), dim);
+        }
+        cout << endl << "Salvare finalizata!" << endl;
+    }
+}
+
+void sub5()
 {
     ofstream f,g,h;
     if (nr_l > 0)
@@ -278,7 +293,7 @@ void sub4()
     cout << endl << "Salvare finalizata!"<< endl;
 }
 
-void sub5()
+void sub6()
 {
     ofstream f;
     f.open("date.txt", ios::trunc);
@@ -449,6 +464,15 @@ int main()
             {
                 system("cls");
                 sub5();
+                cout << "Refolositi optiunea? (1/0): ";
+                cin >> y;
+            }
+            break;
+        case 6:
+            while (y)
+            {
+                system("cls");
+                sub6();
                 cout << "Refolositi optiunea? (1/0): ";
                 cin >> y;
             }
