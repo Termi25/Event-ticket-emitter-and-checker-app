@@ -172,7 +172,7 @@ public:
 		}
 		else
 		{
-			if (scaun != nullptr && scaun[zona] != nullptr && scaun[zona][rand]!=nullptr && zona<nr_zone && rand<nr_randuri && loc<nr_locuri)
+			if (scaun != nullptr && zona<nr_zone && rand<nr_randuri && loc<nr_locuri)
 			{
 				int status_scaun = 0;
 				status_scaun=scaun[zona][rand][loc];
@@ -696,7 +696,7 @@ ofstream& operator<<(ofstream& out, Locatie t2)
 		{
 			for (int g = 0; g < t2.getNr_locuri(); g++)
 			{
-				out << t2.getScaun(g, j, i) << ' ';
+				out << t2.getScaun(i, j, g) << ' ';
 			}
 			out << endl;
 		}

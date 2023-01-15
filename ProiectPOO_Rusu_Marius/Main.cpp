@@ -302,6 +302,7 @@ void sub5()
             }
         }
         f.close();
+        cout << endl << "Date salvate" << endl;
     }
     else
     {
@@ -315,16 +316,16 @@ int main()
     while (x)
     {
         system("cls");
-        cout << "Cum doriti sa porniti programul de generare de bilete?" << endl << endl;
+        cout << "Cum doriti sa utilizati programul de generare de bilete?" << endl << endl;
         cout << "------------------------------------------------------" << endl << endl;
         cout << "Tastati '0' daca doriti sa inchideti programul." << endl << endl;
         cout << "-----------------------------------------------------------------------------------------" << endl << endl;
         cout << "Tastati '1' daca cititi datele urmatoare (locatii si evenimente) din fisierul 'date.txt'." << endl << endl;
         cout << "-----------------------------------------------------------------------------------------" << endl << endl;
         cout << "Tastati '2' daca doriti sa introduceti manual datele (locatii si evenimente)." << endl << endl;
-        cout << "-----------------------------------------------------------------------------------------------" << endl << endl;
+        cout << "-----------------------------------------------------------------------------" << endl << endl;
         cout << "Tastati '3' daca salvati biletele in fisier binar." << endl << endl;
-        cout << "-----------------------------------------------------------------------------------------------" << endl << endl;
+        cout << "--------------------------------------------------" << endl << endl;
         cout << "Tastati '4' daca vreti sa salvati datele introduse in fisiere binare." << endl << endl;
         cout << "-------------------------------------------------------------------------" << endl << endl;
         cout << "Tastati '5' daca vreti sa salvati locatii si evenimentele in fisier text." << endl << endl;
