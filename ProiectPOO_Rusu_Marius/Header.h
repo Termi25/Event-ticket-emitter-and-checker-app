@@ -1429,6 +1429,7 @@ public:
 	}
 
 	friend ostream& operator<<(ostream&, Bilet);
+	friend ofstream& operator<<(ofstream&, Bilet);
 	friend istream& operator>>(istream&, Bilet&);
 	friend ifstream& operator>>(ifstream&, Bilet&);
 };
@@ -1451,6 +1452,19 @@ ostream& operator<<(ostream& out, Bilet bilet)
 	out << "ID locatie: " << bilet.getID_loc() << endl;
 	out << "ID eveniment: " << bilet.getID_ev() << endl;
 	out << "----------------------------------------------" << endl;
+	return out;
+}
+
+ofstream& operator<<(ofstream& out, Bilet bilet)
+{
+	out << bilet.getID() << endl;
+	out << bilet.getNr_locB() << endl;
+	out << bilet.getNr_randB() << endl;
+	out << bilet.getNr_zonaB() << endl;
+	out << bilet.getNume() << endl;
+	out << bilet.getPrenume() << endl;
+	out << bilet.getID_loc() << endl;
+	out << bilet.getID_ev() << endl;
 	return out;
 }
 
@@ -1498,12 +1512,6 @@ ifstream& operator>>(ifstream& in, Bilet& bilet)
 	in >> id;
 	bilet.setID(id);
 
-	in >> il;
-	in >> ie;
-
-	bilet.setID_loc(il);
-	bilet.setID_ev(ie);
-
 	in >> z;
 	in >> r;
 	in >> l;
@@ -1522,6 +1530,12 @@ ifstream& operator>>(ifstream& in, Bilet& bilet)
 	in >> ws;
 	getline(in, np);
 	bilet.setPrenume(np);
+
+	in >> il;
+	in >> ie;
+
+	bilet.setID_loc(il);
+	bilet.setID_ev(ie);
 
 	return in;
 }
